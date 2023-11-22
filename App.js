@@ -3,6 +3,7 @@ import { StatusBar, Dimensions, Switch, TextInput, FlatList } from 'react-native
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Voice from 'react-native-voice';
+import Tts from 'react-native-tts';
 
 const { width, height } = Dimensions.get('window');
 
@@ -15,6 +16,9 @@ export default function App() {
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 2000);
     return () => clearTimeout(timer);
+
+    Tts.setDefaultLanguage('en-US');
+    Tts.setDefaultRate(0.5);
   }, []);
 
   const toggleDarkMode = () => setIsDarkMode((prevMode) => !prevMode);
@@ -29,11 +33,18 @@ export default function App() {
 
   const handleSubmit = () => {
     if (text.trim() !== '') {
-      setChat([...chat, { id: chat.length, text, isUser: true }]);
+      const newChat = [...chat, { id: chat.length, text, isUser: true }];
+      setChat(newChat);
       setText('');
-      // Add any logic here to handle responses or perform actions based on the submitted text
+  
+      // Text-to-speech
+      Tts.speak(text)
+        .then(() => console.log('Text-to-speech successful'))
+        .catch((error) => console.error('Error in text-to-speech:', error));
     }
   };
+  
+  
 
   // Voice
   const [isRecording, setIsRecording] = useState(false);
@@ -41,12 +52,12 @@ export default function App() {
 
   const startRecording = async () => {
     try {
-      await Voice.start('en-US'); // Start recording with specified language
+      await Voice.start('en-US');
       Voice.onSpeechStart = () => {
         setIsRecording(true);
       };
       Voice.onSpeechResults = (e) => {
-        setRecognizedText(e.value[0]); // Set recognized text
+        setRecognizedText(e.value[0]);
       };
     } catch (e) {
       console.error(e);
@@ -57,7 +68,11 @@ export default function App() {
     Voice.onSpeechEnd = () => {
       setIsRecording(false);
       if (recognizedText.trim() !== '') {
-        setChat([...chat, { id: chat.length, text: recognizedText, isUser: false }]);
+        const newChat = [...chat, { id: chat.length, text: recognizedText, isUser: false }];
+        setChat(newChat);
+        
+        // Text-to-speech
+        Tts.speak(recognizedText);
       }
     };
     return () => {
@@ -102,7 +117,7 @@ export default function App() {
       flexDirection: 'row',
       justifyContent: 'space-around',
       alignItems: 'center',
-      marginTop: 10, // Adjusted gap
+      marginTop: 10,
     },
     button: {
       flex: 1,
@@ -115,7 +130,7 @@ export default function App() {
       backgroundColor: '#9999FF',
     },
     microphoneIcon: {
-      fontSize: buttonHeight * 0.5,
+      fontSize: buttonHeight * 0.6, // Adjusted size
       color: 'white',
     },
     buttonLabel: {
@@ -125,7 +140,7 @@ export default function App() {
     inputContainer: {
       flexDirection: 'row',
       alignItems: 'baseline',
-      marginTop: 10, // Adjusted gap
+      marginTop: 10,
     },
     input: {
       flex: 1,
@@ -140,7 +155,7 @@ export default function App() {
       width: '20%', 
       height: buttonHeight,
       backgroundColor: '#9999FF',
-      borderRadius: 5,
+      borderRadius: buttonBorderRadius,
       justifyContent: 'center',
       alignItems: 'center',
       marginLeft: 10,
