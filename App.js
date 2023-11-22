@@ -115,9 +115,10 @@ export default function App() {
     },
     buttonContainer: {
       flexDirection: 'row',
-      justifyContent: 'space-around',
+      justifyContent: 'space-between', // Updated to space-between for even spacing
       alignItems: 'center',
       marginTop: 10,
+      paddingHorizontal: 20, // Added paddingHorizontal for space on both sides
     },
     button: {
       flex: 1,
@@ -139,26 +140,27 @@ export default function App() {
     },
     inputContainer: {
       flexDirection: 'row',
-      alignItems: 'baseline',
+      alignItems: 'center', // Updated to align items in the center
       marginTop: 10,
+      paddingHorizontal: 20, // Added paddingHorizontal for space on both sides
     },
     input: {
       flex: 1,
-      width: '80%',
+      height: buttonHeight, // Set the height to match the button
       borderColor: 'gray',
       borderWidth: 1,
       borderRadius: 5,
       padding: 10,
       marginBottom: 10,
+      marginRight: 10, // Added margin to separate TextInput and Submit button
     },
     submitbutton: {
-      width: '20%',
       height: buttonHeight,
+      width: buttonWidth, // Set a fixed width for uniformity
       backgroundColor: '#9999FF',
       borderRadius: buttonBorderRadius,
       justifyContent: 'center',
       alignItems: 'center',
-      marginLeft: 10,
       padding: 10,
     },
     submitbuttonText: {
@@ -183,7 +185,6 @@ export default function App() {
       color: 'white',
     },
   });
-  
 
   return (
     <View style={styles.container}>
@@ -222,14 +223,6 @@ export default function App() {
             )}
           />
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.button]} onPress={startRecording}>
-              <FontAwesome5 name="microphone" style={styles.microphoneIcon} />
-              <Text style={styles.buttonLabel}>
-                {isRecording ? 'Stop Recording' : 'Microphone'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.inputContainer}>
             <TextInput
               style={styles.input}
               onChangeText={handleChangeText}
@@ -238,6 +231,14 @@ export default function App() {
             />
             <TouchableOpacity style={styles.submitbutton} onPress={handleSubmit}>
               <Text style={styles.submitbuttonText}>Submit</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.inputContainer}>
+            <TouchableOpacity style={[styles.button]} onPress={startRecording}>
+              <FontAwesome5 name="microphone" style={styles.microphoneIcon} />
+              <Text style={styles.buttonLabel}>
+                {isRecording ? 'Stop Recording' : 'Microphone'}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
