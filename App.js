@@ -115,9 +115,9 @@ export default function App() {
               <FontAwesome5 name="clipboard" size={buttonSize * 0.6} color="white" />
               <Text style={[styles.buttonLabel, { fontSize: buttonSize * 0.1 }]}>Clipboard</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
-              <FontAwesome5 name="map" size={buttonSize * 0.6} color="white" />
-              <Text style={[styles.buttonLabel, { fontSize: buttonSize * 0.1 }]}>Map</Text>
+            <TouchableOpacity style={[styles.button, { marginRight: 10 }]}>
+              <FontAwesome5 name="address-book" size={buttonSize * 0.6} color="white" />
+              <Text style={[styles.buttonLabel, { fontSize: buttonSize * 0.1 }]}>Contacts</Text>
             </TouchableOpacity>
           </View>
         </View>
