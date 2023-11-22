@@ -3,7 +3,7 @@ import { StatusBar, Dimensions, Switch, TextInput, FlatList } from 'react-native
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Voice from 'react-native-voice';
-import Tts from 'react-native-tts';
+import * as Speech from 'expo-speech'; // Use Expo's speech module
 
 const { width, height } = Dimensions.get('window');
 
@@ -16,9 +16,6 @@ export default function App() {
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 2000);
     return () => clearTimeout(timer);
-
-    Tts.setDefaultLanguage('en-US');
-    Tts.setDefaultRate(0.5);
   }, []);
 
   const toggleDarkMode = () => setIsDarkMode((prevMode) => !prevMode);
@@ -36,15 +33,13 @@ export default function App() {
       const newChat = [...chat, { id: chat.length, text, isUser: true }];
       setChat(newChat);
       setText('');
-  
-      // Text-to-speech
-      Tts.speak(text)
+
+      // Text-to-speech using Expo's Speech module
+      Speech.speak(text, { language: 'en' })
         .then(() => console.log('Text-to-speech successful'))
         .catch((error) => console.error('Error in text-to-speech:', error));
     }
   };
-  
-  
 
   // Voice
   const [isRecording, setIsRecording] = useState(false);
@@ -68,11 +63,16 @@ export default function App() {
     Voice.onSpeechEnd = () => {
       setIsRecording(false);
       if (recognizedText.trim() !== '') {
-        const newChat = [...chat, { id: chat.length, text: recognizedText, isUser: false }];
+        const newChat = [
+          ...chat,
+          { id: chat.length, text: recognizedText, isUser: false },
+        ];
         setChat(newChat);
-        
-        // Text-to-speech
-        Tts.speak(recognizedText);
+
+        // Text-to-speech using Expo's Speech module
+        Speech.speak(recognizedText, { language: 'en' })
+          .then(() => console.log('Text-to-speech successful'))
+          .catch((error) => console.error('Error in text-to-speech:', error));
       }
     };
     return () => {
@@ -152,7 +152,7 @@ export default function App() {
       marginBottom: 10,
     },
     submitbutton: {
-      width: '20%', 
+      width: '20%',
       height: buttonHeight,
       backgroundColor: '#9999FF',
       borderRadius: buttonBorderRadius,
@@ -183,6 +183,7 @@ export default function App() {
       color: 'white',
     },
   });
+  
 
   return (
     <View style={styles.container}>
@@ -223,7 +224,9 @@ export default function App() {
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={[styles.button]} onPress={startRecording}>
               <FontAwesome5 name="microphone" style={styles.microphoneIcon} />
-              <Text style={styles.buttonLabel}>{isRecording ? 'Stop Recording' : 'Microphone'}</Text>
+              <Text style={styles.buttonLabel}>
+                {isRecording ? 'Stop Recording' : 'Microphone'}
+              </Text>
             </TouchableOpacity>
           </View>
           <View style={styles.inputContainer}>
